@@ -1080,6 +1080,46 @@ body.ui-hidden .restore { opacity: 1; pointer-events: auto; visibility: visible;
   visibility: hidden;
   pointer-events: none;
 }
+.intro-lang {
+  position: absolute;
+  top: calc(30px + env(safe-area-inset-top, 0px));
+  right: calc(38px + env(safe-area-inset-right, 0px));
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  background: rgba(9, 11, 17, 0.42);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  backdrop-filter: blur(18px) saturate(120%);
+  color: var(--ink-3);
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.35s var(--ease), border-color 0.35s var(--ease), background 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.intro-lang svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.9;
+}
+.intro-lang:hover {
+  color: var(--ink);
+  border-color: rgba(244, 239, 229, 0.26);
+  background: rgba(19, 22, 30, 0.62);
+  transform: translateY(-1px);
+}
+.intro-lang:active { transform: scale(0.97); }
 .intro-inner {
   position: absolute;
   left: 8vw;
@@ -1480,6 +1520,48 @@ body.ui-hidden .restore { opacity: 1; pointer-events: auto; visibility: visible;
 .fatal-card p { font-family: var(--sans-zh); font-size: 12px; line-height: 1.9; color: var(--ink-2); }
 .fatal-card .muted { color: var(--ink-3); }
 .fatal-card code { font-family: var(--mono); color: var(--gold); font-size: 11px; }
+
+/* ------------------------------------------------------------ English edition */
+
+/* Reuse the two type stacks, but point them at the Latin faces. */
+html[lang="en"] {
+  --serif-zh: var(--display);
+  --sans-zh: var(--sans);
+}
+
+/* The English edition is less tracked-out than the Chinese original. */
+:where(html[lang="en"]) .title-sub .zh { font-size: 15px; letter-spacing: 0.2em; }
+:where(html[lang="en"]) .title-sub .en { letter-spacing: 0.22em; }
+:where(html[lang="en"]) .intro-sub .cn { font-size: 15px; letter-spacing: 0.22em; }
+:where(html[lang="en"]) .intro-sub .en { letter-spacing: 0.24em; }
+:where(html[lang="en"]) .enter-label { font-size: 13.5px; letter-spacing: 0.18em; }
+:where(html[lang="en"]) .card-name { font-size: 12.5px; letter-spacing: 0.04em; }
+:where(html[lang="en"]) .label-zh { font-size: 12px; letter-spacing: 0.06em; }
+:where(html[lang="en"]) .detail-name h2 { font-size: 33px; letter-spacing: 0.02em; }
+:where(html[lang="en"]) .detail-actions button,
+:where(html[lang="en"]) .tour-btn { letter-spacing: 0.1em; }
+:where(html[lang="en"]) .modal-card h2 { font-size: 31px; letter-spacing: 0.04em; }
+:where(html[lang="en"]) .modal-card h3 { font-size: 14px; letter-spacing: 0.12em; }
+:where(html[lang="en"]) .shelf-title h2 { font-size: 14px; letter-spacing: 0.14em; }
+:where(html[lang="en"]) .pill { letter-spacing: 0.12em; }
+:where(html[lang="en"]) .detail-desc,
+:where(html[lang="en"]) .modal-lede,
+:where(html[lang="en"]) .modal-card p,
+:where(html[lang="en"]) .keys dd { letter-spacing: 0.01em; }
+:where(html[lang="en"]) .fatal-card h2 { letter-spacing: 0.03em; }
+
+@media (max-width: 900px) {
+  .intro-lang {
+    top: calc(18px + env(safe-area-inset-top, 0px));
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    height: 30px;
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .eyebrow { display: none; }
+}
 
 /* ------------------------------------------------------------------- motion */
 

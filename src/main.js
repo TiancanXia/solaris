@@ -26,6 +26,7 @@ import { CameraDirector } from './camera.js';
 import { AmbientAudio } from './audio.js';
 import { FinalGradeShader, makeSharedUniforms } from './materials.js';
 import { BODIES, PLANETS } from './data.js';
+import { initI18n, onLangChange, t, toggleLang } from './i18n.js';
 import {
   julianDateToDate,
   nowJulianDate,
@@ -33,6 +34,8 @@ import {
   stateAt,
   toDisplay,
 } from './ephemeris.js';
+
+initI18n();
 
 const canvas = document.getElementById('stage');
 const fatal = document.getElementById('fatal');
@@ -45,7 +48,7 @@ function showFatal(err) {
   console.error(err);
   if (fatal) {
     fatal.hidden = false;
-    if (fatalMsg) fatalMsg.textContent = err?.message ? String(err.message) : '未能创建 WebGL 2 渲染上下文。';
+    if (fatalMsg) fatalMsg.textContent = err?.message ? String(err.message) : t('fatal.msg');
   }
   const intro = document.getElementById('intro');
   if (intro) intro.style.display = 'none';
@@ -152,6 +155,11 @@ const ui = new SolarUI({
     state.uiHidden = hidden;
     if (hidden) ui.hideCursorTip();
   },
+});
+
+onLangChange(() => ui.refreshLanguage());
+document.querySelectorAll('[data-lang-toggle]').forEach((btn) => {
+  btn.addEventListener('click', () => toggleLanguage());
 });
 
 /* ------------------------------------------------------------------ world */
@@ -332,7 +340,7 @@ function startTour() {
   tour.active = true;
   tour.index = -1;
   ui.setTour(true);
-  ui.showToast('自动巡游 · GRAND TOUR', 2200);
+  ui.showToast(t('toast.tourStart'), 2200);
   stepTour();
 }
 
@@ -353,7 +361,7 @@ function finishTour() {
   tour.timer = null;
   ui.setTour(false);
   goOverview();
-  ui.showToast('巡游结束 · 回到全景', 2600);
+  ui.showToast(t('toast.tourEnd'), 2600);
 }
 
 function stopTour(quiet = false) {
@@ -362,7 +370,7 @@ function stopTour(quiet = false) {
   clearTimeout(tour.timer);
   tour.timer = null;
   ui.setTour(false);
-  if (!quiet) ui.showToast('巡游已停止', 1800);
+  if (!quiet) ui.showToast(t('toast.tourStop'), 1800);
 }
 
 function toggleTour(on) {
@@ -374,7 +382,12 @@ function returnToNow() {
   simJd = nowJulianDate();
   updatePositions(simJd);
   ui.setDate(julianDateToDate(simJd));
-  ui.showToast('已回到此刻 · NOW');
+  ui.showToast(t('toast.now'));
+}
+
+function toggleLanguage() {
+  toggleLang();
+  if (entered) ui.showToast(t('toast.lang'), 1600);
 }
 
 function toggleSound(on) {
@@ -492,6 +505,8 @@ window.addEventListener('keydown', (e) => {
     ui.toggleUI();
   } else if (k === 'n') {
     returnToNow();
+  } else if (k === 'e') {
+    toggleLanguage();
   } else if (e.key === '?' || e.key === '/') {
     ui.openAbout();
   } else if (/^[0-8]$/.test(k)) {
@@ -674,7 +689,7 @@ function updateLive() {
   if (!focusKey) return;
   if (focusKey === 'sun') {
     ui.updateLive([
-      { value: '8 颗' },
+      { value: t('detail.live.planetCount') },
       { value: '99.86%' },
       { value: 'G2V' },
     ]);

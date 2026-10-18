@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "SOLARIS — an interactive solar atlas driven by JPL Keplerian elements",
+  "description": "SOLARIS — a bilingual interactive solar atlas driven by JPL Keplerian elements",
   "license": "MIT",
   "author": "TiancanXia (https://github.com/TiancanXia)",
   "homepage": "https://tiancanxia.github.io/solaris/",
@@ -17,7 +17,9 @@
     "webgl",
     "three.js",
     "ephemeris",
-    "astronomy"
+    "astronomy",
+    "i18n",
+    "bilingual"
   ],
   "scripts": {
     "start": "node server.mjs --open"

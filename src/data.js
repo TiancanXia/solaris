@@ -13,10 +13,12 @@ export const SUN = {
   key: 'sun',
   index: '00',
   nameZh: '太阳',
-  nameEn: 'Sol',
+  nameZhSub: 'SOL',
+  nameEn: 'Sun',
   nameLatin: 'SOL',
   kind: 'star',
   typeLabel: 'G2V 主序星',
+  typeLabelEn: 'G2V main-sequence star',
   typeEn: 'STAR',
   color: '#f6b75e',
   glow: '#ffb45c',
@@ -34,6 +36,8 @@ export const SUN = {
   atmosphere: null,
   description:
     '一颗燃烧了四十六亿年的 G 型恒星，每秒将约六亿吨氢聚变为氦，其中约四百万吨化作光。它独自占据太阳系 99.86% 的质量，是万物轨道的圆心。',
+  descriptionEn:
+    'A G-type star that has burned for 4.6 billion years, fusing some 600 million tonnes of hydrogen into helium every second — about four million tonnes of which become light. It alone holds 99.86% of the Solar System’s mass, and every orbit is drawn around it.',
 };
 
 export const PLANETS = [
@@ -45,6 +49,7 @@ export const PLANETS = [
     nameLatin: 'MERCURIUS',
     kind: 'planet',
     typeLabel: '类地行星',
+    typeLabelEn: 'Terrestrial planet',
     typeEn: 'TERRESTRIAL',
     color: '#a49d92',
     glow: '#c9bda9',
@@ -67,6 +72,8 @@ export const PLANETS = [
     },
     description:
       '离太阳最近的行星，被晨昏线反复篆刻。白昼足以熔化铅，夜晚又冷得彻骨——它几乎没有大气，为自己留住余温。',
+    descriptionEn:
+      'The planet closest to the Sun, inscribed again and again by its terminator. Daytime is hot enough to melt lead, night is bitterly cold — with almost no atmosphere to keep any warmth for itself.',
   },
   {
     key: 'venus',
@@ -76,6 +83,7 @@ export const PLANETS = [
     nameLatin: 'VENUS',
     kind: 'planet',
     typeLabel: '类地行星',
+    typeLabelEn: 'Terrestrial planet',
     typeEn: 'TERRESTRIAL',
     color: '#d9b98a',
     glow: '#f5d9a6',
@@ -98,6 +106,8 @@ export const PLANETS = [
     },
     description:
       '硫酸云层包裹的姐妹星。失控的温室效应把热量锁在地表，令它以四百六十四度的恒温，比水星更灼热。',
+    descriptionEn:
+      'A sister world wrapped in sulfuric clouds. A runaway greenhouse effect traps heat at the surface, holding it at a constant 464°C — hotter than Mercury.',
   },
   {
     key: 'earth',
@@ -107,6 +117,7 @@ export const PLANETS = [
     nameLatin: 'TERRA',
     kind: 'planet',
     typeLabel: '类地行星',
+    typeLabelEn: 'Terrestrial planet',
     typeEn: 'TERRESTRIAL',
     color: '#7aa7d8',
     glow: '#8fc4ff',
@@ -132,6 +143,8 @@ export const PLANETS = [
     },
     description:
       '已知唯一的蓝色星球。液态水、氧气与磁层共同守住了一段足够漫长的平静，让生命得以在此抬头，凝视星空。',
+    descriptionEn:
+      'The only blue planet we know. Liquid water, oxygen and a magnetosphere have together kept a calm long enough for life to look up and gaze at the stars.',
     moonNote: '月球',
   },
   {
@@ -142,6 +155,7 @@ export const PLANETS = [
     nameLatin: 'MARS',
     kind: 'planet',
     typeLabel: '类地行星',
+    typeLabelEn: 'Terrestrial planet',
     typeEn: 'TERRESTRIAL',
     color: '#c4764f',
     glow: '#e6966a',
@@ -164,6 +178,8 @@ export const PLANETS = [
     },
     description:
       '铁锈色的荒原上，躺着太阳系最高的火山与最深的峡谷。水曾在河道里留下证据，而风仍在替它一遍遍擦拭。',
+    descriptionEn:
+      'On a rust-colored wilderness lie the tallest volcano and the deepest canyon in the Solar System. Water once left its evidence in the riverbeds; the wind still wipes them, over and over.',
   },
   {
     key: 'jupiter',
@@ -173,6 +189,7 @@ export const PLANETS = [
     nameLatin: 'IUPPITER',
     kind: 'planet',
     typeLabel: '气态巨行星',
+    typeLabelEn: 'Gas giant',
     typeEn: 'GAS GIANT',
     color: '#c9a887',
     glow: '#eed4b0',
@@ -195,6 +212,8 @@ export const PLANETS = [
     },
     description:
       '气态巨行星之王，质量超过其余行星总和的两倍。大红斑是一场持续了数百年的风暴，宽阔得足以吞下整个地球。',
+    descriptionEn:
+      'King of the gas giants, more than twice the mass of all the other planets combined. The Great Red Spot is a storm that has raged for centuries, wide enough to swallow the whole Earth.',
   },
   {
     key: 'saturn',
@@ -204,6 +223,7 @@ export const PLANETS = [
     nameLatin: 'SATURNUS',
     kind: 'planet',
     typeLabel: '气态巨行星',
+    typeLabelEn: 'Gas giant',
     typeEn: 'GAS GIANT',
     color: '#d8c294',
     glow: '#f2dfb8',
@@ -227,6 +247,8 @@ export const PLANETS = [
     },
     description:
       '太阳系最优雅的行星。数十亿冰粒沿着赤道面铺开成环，宽逾二十八万公里，平均厚度却不足一片霜。',
+    descriptionEn:
+      'The most elegant planet in the Solar System. Billions of ice grains spread along its equatorial plane into rings over 280,000 km wide — yet on average less than a frost’s thickness deep.',
   },
   {
     key: 'uranus',
@@ -236,6 +258,7 @@ export const PLANETS = [
     nameLatin: 'URANUS',
     kind: 'planet',
     typeLabel: '冰巨行星',
+    typeLabelEn: 'Ice giant',
     typeEn: 'ICE GIANT',
     color: '#9fd4dc',
     glow: '#b8eef5',
@@ -258,6 +281,8 @@ export const PLANETS = [
     },
     description:
       '被一次古老撞击推倒的冰巨星。它几乎躺着自转，每八十四年才绕太阳一周，一个季节便长达二十一年。',
+    descriptionEn:
+      'An ice giant knocked over by an ancient collision. It spins almost on its side, taking eighty-four years to circle the Sun, with a single season lasting twenty-one years.',
   },
   {
     key: 'neptune',
@@ -267,6 +292,7 @@ export const PLANETS = [
     nameLatin: 'NEPTUNUS',
     kind: 'planet',
     typeLabel: '冰巨行星',
+    typeLabelEn: 'Ice giant',
     typeEn: 'ICE GIANT',
     color: '#5479d9',
     glow: '#7f9dff',
@@ -289,6 +315,8 @@ export const PLANETS = [
     },
     description:
       '最遥远的行星。深蓝的甲烷大气下藏着太阳系最狂的风，而它本身，是先用数学推算、再被望远镜证实的行星。',
+    descriptionEn:
+      'The farthest planet. Beneath its deep-blue methane atmosphere lie the fiercest winds in the Solar System — and the planet itself was found by mathematics before any telescope confirmed it.',
   },
 ];
 
@@ -305,6 +333,7 @@ export const MOONS = {
       color: '#cfc8bb', glow: '#d8d2c6',
       map: 'textures/moon-4k.jpg', tidallyLocked: true,
       desc: '地球唯一的天然卫星，以同一面朝向人间。',
+      descEn: 'Earth’s only natural satellite, always turning the same face toward us.',
     },
   ],
   jupiter: [
@@ -314,6 +343,7 @@ export const MOONS = {
       orbitRadius: 13.5, periodDays: 1.769138, inclinationDeg: 0.05,
       color: '#d3c07c', glow: '#e8d48d', proc: { seed: 11, base: '#c9b268', accent: '#e6d78c', dark: '#6e5a2b' },
       desc: '太阳系火山活动最剧烈的世界。',
+      descEn: 'The most volcanically active world in the Solar System.',
     },
     {
       key: 'europa', nameZh: '木卫二 · 欧罗巴', nameEn: 'Europa',
@@ -321,6 +351,7 @@ export const MOONS = {
       orbitRadius: 16.8, periodDays: 3.551181, inclinationDeg: 0.47,
       color: '#d6ccb8', glow: '#efe8d8', proc: { seed: 23, base: '#cfc6b2', accent: '#f2ecdd', dark: '#756b5a' },
       desc: '冰壳之下，藏着一片可能孕育生命的海洋。',
+      descEn: 'Beneath its ice shell lies an ocean that may harbor life.',
     },
     {
       key: 'ganymede', nameZh: '木卫三 · 盖尼米得', nameEn: 'Ganymede',
@@ -328,6 +359,7 @@ export const MOONS = {
       orbitRadius: 20.6, periodDays: 7.154553, inclinationDeg: 0.2,
       color: '#a99d8a', glow: '#c9bda8', proc: { seed: 37, base: '#9f9484', accent: '#cdc2ae', dark: '#5c5246' },
       desc: '太阳系最大的卫星，比水星还要庞大。',
+      descEn: 'The largest moon in the Solar System — bigger than Mercury.',
     },
     {
       key: 'callisto', nameZh: '木卫四 · 卡利斯托', nameEn: 'Callisto',
@@ -335,6 +367,7 @@ export const MOONS = {
       orbitRadius: 26.2, periodDays: 16.689018, inclinationDeg: 0.19,
       color: '#7d7468', glow: '#a49a8c', proc: { seed: 53, base: '#746b5f', accent: '#a79c8c', dark: '#3f3932' },
       desc: '太阳系最古老的表面之一，密布陨击坑。',
+      descEn: 'One of the oldest surfaces in the Solar System, densely scarred by craters.',
     },
   ],
   saturn: [
@@ -344,6 +377,7 @@ export const MOONS = {
       orbitRadius: 21.5, periodDays: 15.945, inclinationDeg: 0.35,
       color: '#d0a250', glow: '#e6bd6d', proc: { seed: 71, base: '#c99a48', accent: '#e8c075', dark: '#7f5d25' },
       desc: '拥有浓密氮气大气与液态甲烷湖泊的卫星。',
+      descEn: 'A moon with a thick nitrogen atmosphere and lakes of liquid methane.',
     },
   ],
   neptune: [
@@ -353,21 +387,22 @@ export const MOONS = {
       orbitRadius: 10.4, periodDays: 5.877, inclinationDeg: 23.0,
       color: '#b9b3a8', glow: '#d8d2c6', proc: { seed: 89, base: '#aaa49a', accent: '#d8d1c4', dark: '#5f5a52' }, retrograde: true,
       desc: '逆行的冰质卫星，可能来自柯伊伯带。',
+      descEn: 'A retrograde icy moon, likely captured from the Kuiper Belt.',
     },
   ],
 };
 
 /** Pretty display data, used by cards and the detail ledger. */
 export const UI_META = {
-  sun: { section: '恒星', caption: 'THE HEART' },
-  mercury: { section: '第一行星', caption: 'THE SWIFT' },
-  venus: { section: '第二行星', caption: 'THE VEILED' },
-  earth: { section: '第三行星', caption: 'THE BLUE MARBLE' },
-  mars: { section: '第四行星', caption: 'THE RED FRONTIER' },
-  jupiter: { section: '第五行星', caption: 'THE COLOSSUS' },
-  saturn: { section: '第六行星', caption: 'THE RINGED' },
-  uranus: { section: '第七行星', caption: 'THE SIDEWAYS' },
-  neptune: { section: '第八行星', caption: 'THE OUTERMOST' },
+  sun: { section: '恒星', sectionEn: 'Star', caption: 'THE HEART' },
+  mercury: { section: '第一行星', sectionEn: 'First planet', caption: 'THE SWIFT' },
+  venus: { section: '第二行星', sectionEn: 'Second planet', caption: 'THE VEILED' },
+  earth: { section: '第三行星', sectionEn: 'Third planet', caption: 'THE BLUE MARBLE' },
+  mars: { section: '第四行星', sectionEn: 'Fourth planet', caption: 'THE RED FRONTIER' },
+  jupiter: { section: '第五行星', sectionEn: 'Fifth planet', caption: 'THE COLOSSUS' },
+  saturn: { section: '第六行星', sectionEn: 'Sixth planet', caption: 'THE RINGED' },
+  uranus: { section: '第七行星', sectionEn: 'Seventh planet', caption: 'THE SIDEWAYS' },
+  neptune: { section: '第八行星', sectionEn: 'Eighth planet', caption: 'THE OUTERMOST' },
 };
 
 /** Distance compression: artistic, monotonic, preserves solar-system topology. */

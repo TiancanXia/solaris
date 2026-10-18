@@ -1,13 +1,15 @@
 # SOLARIS · 太阳系观测档案
 
+**简体中文** · [English](README.en.md)
+
 **An interactive solar atlas** — 一座由真实星历驱动的、活的太阳系仪。
 
-[![Live Demo](https://img.shields.io/badge/DEMO-live-c9a86a?style=flat-square)](https://tiancanxia.github.io/solaris/)
+[![Live Demo](https://img.shields.io/badge/DEMO-live-c9a86a?style=flat-square)](https://tiancanxia.github.io/solaris/?lang=zh)
 [![three.js](https://img.shields.io/badge/three.js-r170-1a1a1a?style=flat-square)](https://threejs.org/)
 [![WebGL 2](https://img.shields.io/badge/WebGL-2-c9a86a?style=flat-square)](#浏览器支持)
 [![License](https://img.shields.io/badge/license-MIT-1a1a1a?style=flat-square)](LICENSE)
 
-![SOLARIS · 全景](preview/hero.jpg)
+![SOLARIS · 封面](preview/hero.jpg)
 
 > 八颗行星，一颗恒星，一场以刻为尺的漫游。
 > 轨道由 JPL 近似根数实时推算；拖动时间，看水星疾行、土星缓步，而光与影永远真实。
@@ -24,6 +26,8 @@ SOLARIS 不是一张装饰性星图，而是一份可被操作的观测档案。
 
 **English** — SOLARIS is an interactive orrery driven by real ephemerides. Planetary positions are solved per frame from JPL approximate Keplerian elements (1800–2050); lighting, atmospheres, rings, the Milky Way and ambient audio are generated entirely in code. Vanilla ES modules, WebGL 2 and three.js r170 — no build step, no runtime dependencies, no external requests.
 
+**双语** — 顶部工具栏的地球按钮（封面右上角同样可用）可以在中文与 English 之间即时切换；选择会被记住，也可以用 `?lang=en` 直接打开英文版。英文版以拉丁名（MERCURIUS、TERRA、SATURNUS）作为科学旁注。
+
 ![封面](preview/intro.jpg)
 
 *封面：一座等待进入的太阳系仪。*
@@ -31,6 +35,7 @@ SOLARIS 不是一张装饰性星图，而是一份可被操作的观测档案。
 ## 亮点
 
 - **真实轨道**：水星到海王星均采用真实半长轴、偏心率、倾角、近日点与升交点经度，Newton 法解偏近点角。日期可任意加速、暂停，或一键回到此刻。
+- **真正双语**：完整的中文版与完整的英文版共用同一套场景。切换语言时，行星卡、3D 标注、档案、星历读数、关于面板与页面元信息全部原地更新；选择会写入 `localStorage`，并同步到 `?lang=` 链接。英文版以拉丁名作为科学旁注。
 - **自写着色器**：日面每通道临边昏暗与程序化日冕；地球的昼夜面、云层、城市灯光与海面高光；金星与冰巨星的大气边缘散射；土星环的径向纹理与行星投阴影；程序化银河尘埃带。
 - **九件藏品**：太阳与八大行星，连同七颗被模拟的主要卫星（月球、四颗伽利略卫星、泰坦、特里同），以及一条在近景中悄然退场的小行星尘埃带。
 - **两种凝视**：全景俯瞰整座黄道仪；点击任何行星，镜头以电影感弧线飞近，档案浮出，其他轨道退后，行星被放到画面的左侧三分之二处。
@@ -60,10 +65,13 @@ SOLARIS 不是一张装饰性星图，而是一份可被操作的观测档案。
 | `S` | 环境声开关 |
 | `H` | 隐藏 / 显示整个界面，独享星空 |
 | `N` | 回到此刻 |
+| `E` | 在中 / 英双语之间切换 |
 | `?` | 打开关于面板 |
 | 自动巡游 | 九站连续观测，可随时打断 |
 
 所有时间控制都在左下角的 **EPHEMERIS** 面板：播放 / 暂停、对数速度滑杆、「实时 / 1时 / 1天 / 1周 / 1月」预设，以及「此刻」。
+
+语言也可以直接写进 URL：中文 [`?lang=zh`](https://tiancanxia.github.io/solaris/?lang=zh)，英文 [`?lang=en`](https://tiancanxia.github.io/solaris/?lang=en)。不带参数时，页面会跟随浏览器语言。
 
 ![黄道仪](preview/orrery.jpg)
 
@@ -104,6 +112,14 @@ SOLARIS 不是一张装饰性星图，而是一份可被操作的观测档案。
 - 小行星带：InstancedBufferGeometry + 顶点着色器轨道运动；近景自动缩小以避免「巨石」入镜；聚焦时整条尘埃带退场。
 - 星空：单次 draw call 的 12,500 颗恒星，带温度色与极轻闪烁；银河为程序化三维 FBM 尘埃带，无接缝、无贴图。
 
+**双语层**
+
+- `src/i18n.js`：一份词典、两个完整版本，以及星历与天体名称的共享辅助函数。
+- 静态 HTML 通过 `data-i18n`、`data-i18n-html`、`data-i18n-aria`、`data-i18n-title` 属性翻译。
+- 动态界面——行星卡、3D 标注、档案、实时读数、速度单位、提示条与巡游按钮——在切换语言时原地重建。
+- 语言检测顺序：`?lang=` → `localStorage` → `navigator.language`（`zh-*` 为中文，其余为英文）。切换时用 `history.replaceState` 更新 URL，当前版本可直接分享。
+- 页面的 `lang` 属性同步更新，CSS 中两套字体栈随之切换，让两个版本各自拥有合适的排版语气。
+
 **性能与兼容性**
 
 - 渲染分辨率会根据持续帧率在 1× 与 1.75× 之间自适应（默认以 1.5× 起始）。
@@ -121,7 +137,8 @@ solaris/
 ├─ src/
 │  ├─ main.js            编排：渲染、时间、交互、性能
 │  ├─ ephemeris.js       JPL 根数与开普勒解算
-│  ├─ data.js            行星 / 卫星数据与档案文案
+│  ├─ data.js            行星 / 卫星数据与档案文案（中 + 英）
+│  ├─ i18n.js            双语词典、语言检测与天体名称辅助
 │  ├─ world.js           场景：太阳、行星、环、卫星、尘埃、天空
 │  ├─ materials.js       全部 GLSL 与最终调色
 │  ├─ camera.js          电影感镜头导演
@@ -133,11 +150,12 @@ solaris/
 │                        ShaderPass、UnrealBloomPass 及其依赖（MIT）
 ├─ fonts/                本地字体与中文子集
 ├─ textures/             行星、地球云 / 夜光 / 高光、土星环
-├─ preview/              README 截图
+├─ preview/              README 截图（中 / 英）
 ├─ server.mjs            零依赖本地服务器
 ├─ start.cmd / start.sh  一键启动
 ├─ LICENSES.md           第三方素材与数据授权
-└─ README.md
+├─ README.md             中文版
+└─ README.en.md          英文版
 ```
 
 ## 本地运行
@@ -169,7 +187,7 @@ python -m http.server 8080      # 或 python3 -m http.server 8080
 node server.mjs                 # npm start 会同时打开浏览器
 ```
 
-然后在浏览器打开 <http://localhost:8080/>。
+然后在浏览器打开 <http://localhost:8080/>；追加 `?lang=en` 或 `?lang=zh` 可指定版本。
 
 无需 `npm install`、无需构建。three.js、字体、纹理全部已随项目自托管，断网亦可运行。
 
@@ -177,7 +195,7 @@ node server.mjs                 # npm start 会同时打开浏览器
 
 本项目是纯静态站点，无需构建、无需服务器端逻辑。
 
-- **GitHub Pages**：已从 `main` 分支根目录发布，在线地址为 <https://tiancanxia.github.io/solaris/>。仓库 Settings → Pages 中可查看或重新配置。
+- **GitHub Pages**：已从 `main` 分支根目录发布，在线地址为 <https://tiancanxia.github.io/solaris/>；英文版为同一地址加 `?lang=en`。仓库 Settings → Pages 中可查看或重新配置。
 - **任意静态托管**：Vercel、Netlify、Cloudflare Pages、nginx 或对象存储均可直接托管整个目录；入口为 `index.html`。
 - 若托管在子路径下（如 `/solaris/`），无需修改任何路径——项目内部全部使用相对路径。
 

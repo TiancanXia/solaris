@@ -3,6 +3,17 @@
  * The observatory console: specimen shelf, ephemeris, labels, ledger, intro.
  */
 import { BODIES, MOONS, PLANETS, SUN } from './data.js';
+import {
+  bodyDescription,
+  bodyName,
+  bodySub,
+  bodyType,
+  getLang,
+  moonChipName,
+  moonLabelPrimary,
+  moonLabelSecondary,
+  t,
+} from './i18n.js';
 import { Vector3 } from 'three';
 
 const $ = (s, root = document) => root.querySelector(s);
@@ -18,30 +29,34 @@ function hexToRgba(hex, alpha = 1) {
 }
 
 function formatSpeed(days) {
-  if (days <= 0.00002) return { value: '实时', unit: '1 : 1' };
+  if (days <= 0.00002) return { value: t('speed.realtime'), unit: '1 : 1' };
   if (days <= 1 / 24 + 1e-7) {
     const hours = days * 24;
-    if (hours < 1 / 60) return { value: (days * 86400).toFixed(1), unit: '秒 / 秒' };
-    if (hours < 1) return { value: (days * 1440).toFixed(1), unit: '分 / 秒' };
-    return { value: hours.toFixed(1), unit: '时 / 秒' };
+    if (hours < 1 / 60) return { value: (days * 86400).toFixed(1), unit: t('speed.secPerSec') };
+    if (hours < 1) return { value: (days * 1440).toFixed(1), unit: t('speed.minPerSec') };
+    return { value: hours.toFixed(1), unit: t('speed.hourPerSec') };
   }
-  if (days < 30) return { value: days.toFixed(days < 10 ? 1 : 0), unit: '天 / 秒' };
-  if (days < 365.25) return { value: (days / 30.4375).toFixed(1), unit: '月 / 秒' };
-  return { value: (days / 365.25).toFixed(1), unit: '年 / 秒' };
+  if (days < 30) return { value: days.toFixed(days < 10 ? 1 : 0), unit: t('speed.dayPerSec') };
+  if (days < 365.25) return { value: (days / 30.4375).toFixed(1), unit: t('speed.monthPerSec') };
+  return { value: (days / 365.25).toFixed(1), unit: t('speed.yearPerSec') };
 }
 
 function formatRotation(hours) {
   if (!hours) return '—';
   const abs = Math.abs(hours);
-  const retro = hours < 0 ? ' · 逆行' : '';
-  if (abs < 48) return `${abs.toFixed(1)} 小时${retro}`;
-  return `${(abs / 24).toFixed(abs / 24 < 10 ? 1 : 0)} 天${retro}`;
+  const retro = hours < 0 ? t('rotation.retro') : '';
+  if (abs < 48) return t('rotation.hours', { n: abs.toFixed(1) }) + retro;
+  return t('rotation.days', { n: (abs / 24).toFixed(abs / 24 < 10 ? 1 : 0) }) + retro;
 }
 
 function formatPeriod(days) {
   if (!days) return '—';
-  if (days < 1000) return `${days < 100 ? days.toFixed(1) : fmtInt.format(Math.round(days))} 天`;
-  return `${(days / 365.25).toFixed(1)} 年`;
+  if (days < 1000) {
+    return t('period.days', {
+      n: days < 100 ? days.toFixed(1) : fmtInt.format(Math.round(days)),
+    });
+  }
+  return t('period.years', { n: (days / 365.25).toFixed(1) });
 }
 
 function formatMass(m) {
@@ -114,6 +129,10 @@ export class SolarUI {
     this.labelRecords = [];
     this.startedAt = performance.now();
     this.lastLive = 0;
+    this.lang = getLang();
+    this._progressPct = 0;
+    this._detailKey = null;
+    this._tipKey = null;
     this._buildCards();
     this._buildLabels();
     this._bind();
@@ -121,6 +140,8 @@ export class SolarUI {
     this._updateSpeedUI();
     this._updatePresets();
     this._setTimezoneCaption();
+    this.setPlaying(this.state.playing, true);
+    this.setTour(false);
     if (this.els.app) {
       this.els.app.inert = true;
       this.els.app.setAttribute('aria-hidden', 'true');
@@ -132,15 +153,17 @@ export class SolarUI {
 
   _buildCards() {
     const items = [SUN, ...PLANETS];
+    this.lang = getLang();
     this.els.cards.innerHTML = items
       .map((b) => {
         const glow = hexToRgba(b.glow ?? b.color, 0.42);
+        const name = bodyName(b);
         return `
-          <button class="card" data-key="${b.key}" style="--planet-glow:${glow}" aria-label="聚焦${b.nameZh}">
+          <button class="card" data-key="${b.key}" style="--planet-glow:${glow}" aria-label="${t('card.focus', { name })}">
             <span class="card-index">${b.index}</span>
             <span class="thumb"><span class="thumb-inner" style="background-image:url('${b.cardMap}')"></span></span>
-            <span class="card-name">${b.nameZh}</span>
-            <span class="card-en">${b.nameEn.toUpperCase()}</span>
+            <span class="card-name">${name}</span>
+            <span class="card-en">${bodySub(b)}</span>
           </button>`;
       })
       .join('');
@@ -161,16 +184,23 @@ export class SolarUI {
   /* ----------------------------------------------------------------- labels */
 
   _buildLabels() {
+    this.lang = getLang();
     const list = [];
     for (const b of [SUN, ...PLANETS]) {
-      list.push({ key: b.key, zh: b.nameZh, en: b.nameEn.toUpperCase(), isMoon: false, parent: null });
+      list.push({
+        key: b.key,
+        primary: bodyName(b),
+        secondary: bodySub(b),
+        isMoon: false,
+        parent: null,
+      });
     }
     for (const [parentKey, moons] of Object.entries(MOONS)) {
       for (const m of moons) {
         list.push({
           key: m.key,
-          zh: m.nameEn.toUpperCase(),
-          en: m.nameZh.split('·').pop().trim(),
+          primary: moonLabelPrimary(m),
+          secondary: moonLabelSecondary(m),
           isMoon: true,
           parent: parentKey,
         });
@@ -181,8 +211,8 @@ export class SolarUI {
         (l) =>
           `<div class="label ${l.isMoon ? 'moon' : ''} is-hidden" data-key="${l.key}" data-parent="${l.parent ?? ''}">
             <i class="label-dot"></i><i class="label-line"></i>
-            <span class="label-zh">${l.zh}</span>
-            ${l.en ? `<span class="label-en">${l.en}</span>` : ''}
+            <span class="label-zh">${l.primary}</span>
+            ${l.secondary ? `<span class="label-en">${l.secondary}</span>` : ''}
           </div>`
       )
       .join('');
@@ -320,7 +350,7 @@ export class SolarUI {
     if (!body) return;
     if (this._tipKey !== key) {
       this._tipKey = key;
-      this.els.tip.innerHTML = `<b>${body.nameZh}</b><span>点击聚焦</span>`;
+      this.els.tip.innerHTML = `<b>${bodyName(body)}</b><span>${t('tips.focus')}</span>`;
     }
     this.els.tip.style.transform = `translate3d(${x + 16}px, ${y + 16}px, 0)`;
     this.els.tip.classList.add('is-visible');
@@ -335,26 +365,28 @@ export class SolarUI {
   showDetail(key) {
     const body = BODIES.find((b) => b.key === key);
     if (!body) return;
+    this.lang = getLang();
+    this._detailKey = key;
     this._setActiveCard(key);
     this.els.dIndex.textContent = key === 'sun' ? '00 / STAR' : `${body.index} / 08`;
-    this.els.dName.textContent = body.nameZh;
-    this.els.dEn.textContent = body.nameEn.toUpperCase();
-    this.els.dType.textContent = `${body.typeLabel} · ${body.typeEn}`;
-    this.els.dDesc.textContent = body.description;
+    this.els.dName.textContent = bodyName(body);
+    this.els.dEn.textContent = bodySub(body);
+    this.els.dType.textContent = bodyType(body);
+    this.els.dDesc.textContent = bodyDescription(body);
     this.els.dGrid.innerHTML = [
-      ['半径', `${fmtInt.format(Math.round(body.radiusKm))} km`],
-      ['质量', formatMass(body.massEarth)],
-      ['自转', formatRotation(body.rotationHours)],
-      ['公转', formatPeriod(body.orbitalPeriodDays)],
-      ['表面温度', formatTemp(body.meanTempC)],
-      ['重力', `${body.gravity.toFixed(1)} m/s²`],
+      [t('detail.stats.radius'), `${fmtInt.format(Math.round(body.radiusKm))} km`],
+      [t('detail.stats.mass'), formatMass(body.massEarth)],
+      [t('detail.stats.rotation'), formatRotation(body.rotationHours)],
+      [t('detail.stats.period'), formatPeriod(body.orbitalPeriodDays)],
+      [t('detail.stats.temp'), formatTemp(body.meanTempC)],
+      [t('detail.stats.gravity'), `${body.gravity.toFixed(1)} m/s²`],
     ]
       .map(([k, v]) => `<div class="stat"><span>${k}</span><b>${v}</b></div>`)
       .join('');
 
-    this.els.dLive.innerHTML = `<div><span>${key === 'sun' ? '行星' : '日心距'}</span><b id="live-a">${key === 'sun' ? '8 颗' : '—'}</b></div>
-      <div><span>${key === 'sun' ? '质量占比' : '轨道速度'}</span><b id="live-b">${key === 'sun' ? '99.86%' : '—'}</b></div>
-      <div><span>${key === 'sun' ? '类型' : '黄经'}</span><b id="live-c">${key === 'sun' ? 'G2V' : '—'}</b></div>`;
+    this.els.dLive.innerHTML = `<div><span>${key === 'sun' ? t('detail.live.planets') : t('detail.live.distance')}</span><b id="live-a">${key === 'sun' ? t('detail.live.planetCount') : '—'}</b></div>
+      <div><span>${key === 'sun' ? t('detail.live.massShare') : t('detail.live.speed')}</span><b id="live-b">${key === 'sun' ? '99.86%' : '—'}</b></div>
+      <div><span>${key === 'sun' ? t('detail.live.type') : t('detail.live.longitude')}</span><b id="live-c">${key === 'sun' ? 'G2V' : '—'}</b></div>`;
 
     const moons = MOONS[key] ?? [];
     this.els.dMoonsWrap.style.display = key === 'sun' ? 'none' : 'block';
@@ -362,12 +394,12 @@ export class SolarUI {
       const total = body.moons ?? 0;
       if (moons.length) {
         this.els.dMoons.innerHTML =
-          moons.map((m) => `<span class="moon-chip">${m.nameEn}</span>`).join('') +
-          `<span class="moon-chip count">系统共 ${total} 颗</span>`;
+          moons.map((m) => `<span class="moon-chip">${moonChipName(m)}</span>`).join('') +
+          `<span class="moon-chip count">${t('detail.moons.total', { n: total })}</span>`;
       } else if (total > 0) {
-        this.els.dMoons.innerHTML = `<span class="moon-chip none">本次未模拟 · 系统共 ${total} 颗</span>`;
+        this.els.dMoons.innerHTML = `<span class="moon-chip none">${t('detail.moons.notSimulated', { n: total })}</span>`;
       } else {
-        this.els.dMoons.innerHTML = '<span class="moon-chip none">无天然卫星</span>';
+        this.els.dMoons.innerHTML = `<span class="moon-chip none">${t('detail.moons.none')}</span>`;
       }
     }
     this.els.detail.classList.add('is-open');
@@ -399,7 +431,7 @@ export class SolarUI {
     const sign = off >= 0 ? '+' : '−';
     const abs = Math.abs(off);
     const z = `UTC${sign}${Math.floor(abs / 60)}${abs % 60 ? ':' + pad2(abs % 60) : ''}`;
-    this.els.ephCaption.textContent = `本地时间 · ${z} · 开普勒轨道实时推进`;
+    this.els.ephCaption.textContent = t('ephemeris.caption', { tz: z });
   }
 
   setDate(date) {
@@ -412,7 +444,10 @@ export class SolarUI {
     this.els.speedValue.textContent = value;
     this.els.speedUnit.textContent = unit;
     this.els.ephStatus.textContent = this.state.playing ? 'RUNNING' : 'HOLD';
-    this.els.slider.setAttribute('aria-valuetext', value === '实时' ? '实时' : `${value} ${unit}`);
+    this.els.slider.setAttribute(
+      'aria-valuetext',
+      value === t('speed.realtime') ? value : `${value} ${unit}`
+    );
     const log = Math.log10(clamp(this.state.speed, 0.0000115741, 199.5));
     this.els.slider.value = String(log);
   }
@@ -443,7 +478,10 @@ export class SolarUI {
   setPlaying(playing, silent = false) {
     this.state.playing = playing;
     document.body.classList.toggle('is-paused', !playing);
-    this.els.btnPlay.setAttribute('aria-label', playing ? '暂停时间' : '继续时间');
+    this.els.btnPlay.setAttribute(
+      'aria-label',
+      playing ? t('ephemeris.pauseAria') : t('ephemeris.resumeAria')
+    );
     this._updateSpeedUI();
     if (!silent) this.opts.onPlayToggle?.(playing);
   }
@@ -460,9 +498,12 @@ export class SolarUI {
 
   setProgress(p) {
     const pct = Math.round(clamp(p, 0, 0.99) * 100);
+    this._progressPct = pct;
     this.els.loaderBar.style.width = `${pct}%`;
     this.els.loaderPct.textContent = `${pct}%`;
-    if (!this.state.ready && pct > 8) this.els.loaderLabel.textContent = '正在展开轨道 · ASSEMBLING ORBITS';
+    if (!this.state.ready && pct > 8) {
+      this.els.loaderLabel.textContent = t('loader.assembling');
+    }
   }
 
   _measureLabels() {
@@ -477,7 +518,7 @@ export class SolarUI {
     this.state.ready = true;
     this.els.loaderBar.style.width = '100%';
     this.els.loaderPct.textContent = '100%';
-    this.els.loaderLabel.textContent = '星历已同步 · EPHEMERIS READY';
+    this.els.loaderLabel.textContent = t('loader.ready');
     this.els.enter.disabled = false;
     this.els.intro.classList.add('is-ready');
     requestAnimationFrame(() => this._measureLabels());
@@ -525,7 +566,7 @@ export class SolarUI {
     const next = force ?? !this.state.soundOn;
     this._setSoundUI(next);
     this.opts.onSoundToggle?.(next);
-    this.showToast(next ? '环境声 · ON' : '环境声 · OFF');
+    this.showToast(next ? t('toast.soundOn') : t('toast.soundOff'));
   }
 
   toggleOrbits(force) {
@@ -534,7 +575,7 @@ export class SolarUI {
     this.els.btnOrbits.classList.toggle('is-on', next);
     this.els.btnOrbits.setAttribute('aria-pressed', String(next));
     this.opts.onOrbitsToggle?.(next);
-    this.showToast(next ? '轨道线 · 显示' : '轨道线 · 隐藏');
+    this.showToast(next ? t('toast.orbitsOn') : t('toast.orbitsOff'));
   }
 
   toggleLabels(force) {
@@ -552,8 +593,12 @@ export class SolarUI {
     if (!btn) return;
     btn.classList.toggle('is-on', on);
     btn.setAttribute('aria-pressed', String(on));
+    btn.setAttribute('aria-label', on ? t('tour.ariaOn') : t('tour.ariaOff'));
+    btn.setAttribute('title', on ? t('tour.titleOn') : t('tour.titleOff'));
     const label = btn.querySelector('.tour-label');
-    if (label) label.textContent = on ? '结束巡游' : '自动巡游';
+    if (label) label.textContent = on ? t('tour.labelOn') : t('tour.labelOff');
+    const em = btn.querySelector('em');
+    if (em) em.textContent = on ? t('tour.emOn') : t('tour.emOff');
   }
 
   toggleUI(force) {
@@ -562,6 +607,36 @@ export class SolarUI {
     document.body.classList.toggle('ui-hidden', next);
     this.els.btnRestore.setAttribute('aria-hidden', String(!next));
     this.opts.onUIToggle?.(next);
+  }
+
+  /** Rebuild every generated text surface after a language switch. */
+  refreshLanguage() {
+    this.lang = getLang();
+    const active = this.state.focusKey;
+    const detailOpen = this.els.detail.classList.contains('is-open');
+    const scroller = this.els.detail.querySelector('.detail-scroll');
+    const scrollTop = scroller ? scroller.scrollTop : 0;
+
+    this._buildCards();
+    this._buildLabels();
+    this._setActiveCard(active);
+    if (detailOpen && this._detailKey) {
+      this.showDetail(this._detailKey);
+      if (scroller) scroller.scrollTop = scrollTop;
+    }
+
+    this._setTimezoneCaption();
+    this._updateSpeedUI();
+    this._updatePresets();
+    this.setPlaying(this.state.playing, true);
+    this.setTour(this.state.tourOn);
+    this._tipKey = null;
+
+    if (this.state.ready) this.els.loaderLabel.textContent = t('loader.ready');
+    else if (this._progressPct > 8) this.els.loaderLabel.textContent = t('loader.assembling');
+    else this.els.loaderLabel.textContent = t('loader.calibrating');
+
+    requestAnimationFrame(() => this._measureLabels());
   }
 
   openAbout() {
