@@ -1,6 +1,6 @@
 # SOLARIS · The Solar Atlas
 
-[简体中文](README.md) · **English**
+[简体中文](README_cn.md) · **English**
 
 **An interactive solar atlas** — a living orrery driven by real ephemerides.
 
