@@ -1,0 +1,25 @@
+{
+  "name": "solaris",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SOLARIS — an interactive solar atlas driven by JPL Keplerian elements",
+  "license": "MIT",
+  "author": "TiancanXia (https://github.com/TiancanXia)",
+  "homepage": "https://tiancanxia.github.io/solaris/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TiancanXia/solaris.git"
+  },
+  "keywords": [
+    "solar-system",
+    "orrery",
+    "webgl",
+    "three.js",
+    "ephemeris",
+    "astronomy"
+  ],
+  "scripts": {
+    "start": "node server.mjs --open"
+  }
+}
