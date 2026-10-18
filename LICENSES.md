@@ -104,8 +104,7 @@ not fetch external services at runtime.
 
 The interface, layout, copy, custom GLSL shaders, procedural nebula, procedural moon
 textures, camera choreography, audio synthesis and application code were created for this
-project in 2026. The reference photograph / comparison image outside this folder is not
-included and is owned by its respective authors.
+project in 2026.
 
 The preview images in `preview/` are screenshots of this application and contain the
 CC BY 4.0 Solar System Scope textures listed above.

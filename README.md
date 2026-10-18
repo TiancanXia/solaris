@@ -24,6 +24,10 @@ SOLARIS 不是一张装饰性星图，而是一份可被操作的观测档案。
 
 **English** — SOLARIS is an interactive orrery driven by real ephemerides. Planetary positions are solved per frame from JPL approximate Keplerian elements (1800–2050); lighting, atmospheres, rings, the Milky Way and ambient audio are generated entirely in code. Vanilla ES modules, WebGL 2 and three.js r170 — no build step, no runtime dependencies, no external requests.
 
+![封面](preview/intro.jpg)
+
+*封面：一座等待进入的太阳系仪。*
+
 ## 亮点
 
 - **真实轨道**：水星到海王星均采用真实半长轴、偏心率、倾角、近日点与升交点经度，Newton 法解偏近点角。日期可任意加速、暂停，或一键回到此刻。
