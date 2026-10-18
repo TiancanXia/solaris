@@ -24,8 +24,6 @@ SOLARIS is not a decorative star chart; it is an observatory console you can ope
 
 You can pause time, cast the date into the past or future, and lean in on any planet; or start the Grand Tour and let it carry you from the Sun to Neptune. Every reading — heliocentric distance, orbital speed, ecliptic longitude — is computed from the simulated instant, never scripted.
 
-**中文** — SOLARIS 是一座由真实星历驱动的可交互太阳系仪。八颗行星沿开普勒轨道逐帧解算，光、影、土星环、银河与空间声全部由代码生成。原生 ES Modules + WebGL 2 + three.js r170，无需构建、无运行时依赖；完整中文版与英文版可随时切换。
-
 ![The cover](preview/intro-en.jpg)
 
 *The cover: an orrery waiting to be entered.*
