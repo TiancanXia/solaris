@@ -1,6 +1,6 @@
 # SOLARIS · 太阳系观测档案
 
-**简体中文** · [English](README.en.md)
+**简体中文** · [English](README.md)
 
 **An interactive solar atlas** — 一座由真实星历驱动的、活的太阳系仪。
 
